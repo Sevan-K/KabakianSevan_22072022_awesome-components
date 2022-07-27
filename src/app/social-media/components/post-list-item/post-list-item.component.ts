@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { NewCommentOnPost } from '../../models/newCommentOnPost.model';
 import { Post } from '../../models/post.model';
 
 @Component({
@@ -10,7 +11,14 @@ export class PostListItemComponent implements OnInit {
   // to get post from the smart component
   @Input() post!: Post;
 
+  @Output() newCommentOnPost = new EventEmitter<NewCommentOnPost>();
+
   constructor() {}
 
   ngOnInit(): void {}
+
+  onNewComment(newComment: string): void {
+    console.log(newComment);
+    this.newCommentOnPost.emit({ postId: this.post.id, comment: newComment });
+  }
 }

@@ -7,7 +7,7 @@
     </mat-card-title>
     <mat-card-subtitle>
       <span>
-        {{ post.createdDate | date: "d MMMM yyyy à HH:mm" }}
+        {{ post.createdDate | date: "le d MMMM yyyy à HH:mm" }}
       </span>
     </mat-card-subtitle>
   </mat-card-header>
@@ -23,10 +23,11 @@
     </span>
   </mat-card-content>
 
-  <div>
+  <mat-card-actions>
+    <!-- *ngFor="let comment of post.comments" -->
     <app-comments
-      *ngFor="let comment of post.comments"
-      [comment]="comment"
+      [comments]="post.comments"
+      (newComment)="onNewComment($event)"
     ></app-comments>
-  </div>
+  </mat-card-actions>
 </mat-card>
