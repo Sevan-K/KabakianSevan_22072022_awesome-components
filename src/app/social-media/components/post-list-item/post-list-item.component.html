@@ -1,13 +1,17 @@
 <mat-card>
   <mat-card-header>
+    <!-- <mat-card-title>{{
+      { lastName: "kabakian", firstName: "sevan" } | userName
+    }}</mat-card-title> -->
     <mat-card-title>
       <span>
         {{ post.title | titlecase }}
       </span>
     </mat-card-title>
     <mat-card-subtitle>
+      <!-- <span> {{ post.createdDate | date: "le d MMMM yyyy à HH:mm" }} </span> -->
       <span>
-        {{ post.createdDate | date: "le d MMMM yyyy à HH:mm" }}
+        {{ post.createdDate | timeAgo }}
       </span>
     </mat-card-subtitle>
   </mat-card-header>
@@ -19,7 +23,7 @@
       [alt]="post.title"
     />
     <span class="post-content">
-      {{ post.content }}
+      {{ post.content | shorten: 100 }}
     </span>
   </mat-card-content>
 
