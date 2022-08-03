@@ -17,6 +17,7 @@ export class HightLightDirective implements AfterViewInit {
   // a directive can take an input just like a component
   // if the input name is the same as the directive no other attribute is necessary but the default value can't be used
   @Input() color: string = 'yellow';
+  colorUsed!: string;
 
   // element ref is used top connect to dom element where directive is applied
   // the renderer allow us to interact with the native element
@@ -25,6 +26,7 @@ export class HightLightDirective implements AfterViewInit {
   // to be sure the view exist
   ngAfterViewInit() {
     this.setBackGroundColor(this.color);
+    this.colorUsed = this.color;
   }
 
   //   method to set background-color
@@ -38,14 +40,16 @@ export class HightLightDirective implements AfterViewInit {
 
   // decorator to listen to event on host (of the directive)
   @HostListener('mouseenter') onMouseEnter() {
-    this.setBackGroundColor('lightgreen');
+    this.setBackGroundColor(
+      this.color === this.colorUsed ? 'lightgreen' : this.color
+    );
   }
 
   @HostListener('mouseleave') onMouseLeave() {
-    this.setBackGroundColor(this.color);
+    this.setBackGroundColor(this.colorUsed);
   }
 
   @HostListener('click') onMouseClick() {
-    this.color = 'lightgreen';
+    this.colorUsed = this.color === this.colorUsed ? 'lightgreen' : this.color;
   }
 }

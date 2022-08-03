@@ -12,7 +12,7 @@
     <mat-icon>send</mat-icon>
   </button>
 </div>
-<mat-list *ngIf="comments.length">
+<mat-list *ngIf="comments.length" @list>
   <h2 matSubheader>Commentaire</h2>
   <mat-list-item
     *ngFor="let comment of comments; let i = index"
@@ -20,7 +20,11 @@
     (mouseenter)="onLitsttemMouseEnter(comment.id)"
     (mouseleave)="onLitsttemMouseLeave(comment.id)"
   >
-    <span matLine>{{ comment.comment | shorten: 100 }}</span>
-    <span matLine>{{ comment.createdDate | timeAgo }}</span>
+    <span matLine class="comment__text">{{
+      comment.comment | shorten: 100
+    }}</span>
+    <span matLine class="comment__date">{{
+      comment.createdDate | timeAgo
+    }}</span>
   </mat-list-item>
 </mat-list>
