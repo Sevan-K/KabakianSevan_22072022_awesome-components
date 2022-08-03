@@ -32,6 +32,7 @@ import { slideAndFadeAnimation } from '../../animations/slide-and-fade.animation
       ]),
     ]),
     trigger('listItem', [
+      // ------- state change animation
       state(
         'default',
         style({
@@ -50,14 +51,19 @@ import { slideAndFadeAnimation } from '../../animations/slide-and-fade.animation
       ),
       transition('default => active', [animate('100ms ease-in-out')]),
       transition('active => default', [animate('500ms ease-in-out')]),
+      // ------- animation from void
       // transition from void to all (void=>* or :enter), from all to void (void<=* or :leave)
       // transition on both way (void <=> *)
       transition(':enter', [
         query('.comment__text, .comment__date', style({ opacity: 0 })),
-        useAnimation(slideAndFadeAnimation),
+        useAnimation(slideAndFadeAnimation, {
+          params: { slideTime: '250ms', slideColor: 'rgb(201,157,242)' },
+        }),
         // to launch animation in parallel
         group([
-          useAnimation(flashAnimation),
+          useAnimation(flashAnimation, {
+            params: { flashTime: '250ms', flashColor: 'rgb(201,157,242)' },
+          }),
           query('.comment__text', [animate('250ms', style({ opacity: 1 }))]),
           query('.comment__date', [animate('500ms', style({ opacity: 1 }))]),
         ]),

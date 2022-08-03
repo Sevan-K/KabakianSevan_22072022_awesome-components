@@ -3,13 +3,13 @@ import { animation, sequence, style, animate } from '@angular/animations';
 export const flashAnimation = animation([
   sequence([
     animate(
-      '100ms ease-out',
+      '{{flashTime}} ease-out',
       style({
-        'background-color': 'rgb(201,157,242)',
+        'background-color': '{{flashColor}}',
       })
     ),
     animate(
-      '250ms ease-in',
+      '{{flashTime}} ease-in',
       style({
         'background-color': 'white',
       })
