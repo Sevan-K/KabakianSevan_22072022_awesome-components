@@ -9,6 +9,13 @@ const routes: Routes = [
         (module) => module.SocialMediaModule
       ),
   },
+  {
+    path: 'complex-form',
+    loadChildren: () =>
+      import('./complex-form/complex-form.module').then(
+        (module) => module.ComplexFormModule
+      ),
+  },
   // ** : if a route is not recognize
   { path: '**', redirectTo: 'social-media' },
 ];

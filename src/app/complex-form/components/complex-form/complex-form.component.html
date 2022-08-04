@@ -1,0 +1,21 @@
+<mat-card [formGroup]="mainForm" class="main-form">
+  <mat-card-title>Inscription</mat-card-title>
+  <mat-card class="form-card">
+    <mat-card-subtitle>Informations personnelles</mat-card-subtitle>
+  </mat-card>
+  <mat-card class="form-card">
+    <mat-card-subtitle>Comment préférez-vous être contacter</mat-card-subtitle>
+  </mat-card>
+  <mat-card class="form-card">
+    <mat-card-subtitle>Email</mat-card-subtitle>
+  </mat-card>
+  <mat-card class="form-card">
+    <mat-card-subtitle>Téléphone</mat-card-subtitle>
+  </mat-card>
+  <mat-card class="form-card">
+    <mat-card-subtitle>Information de connexion</mat-card-subtitle>
+  </mat-card>
+  <mat-card-actions *ngIf="mainForm.valid">
+    <button mat-flat-button color="primary" (click)="onSubmitForm()" >Enregistrez</button>
+  </mat-card-actions>
+</mat-card>
