@@ -28,7 +28,7 @@
     <mat-card
         class="form-card"
         [formGroup]="emailForm"
-        *ngIf="test$ | async as test"
+        *ngIf="showEmailCtrl$ | async"
     >
         <mat-card-subtitle>Email</mat-card-subtitle>
         <div class="form-row">
@@ -38,12 +38,12 @@
             </mat-form-field>
             <mat-form-field appearance="fill">
                 <mat-label>Confirmer votre adresse mail</mat-label>
-                <input type="text" matInput formControlName="confirm" />
+                <input type="text" matInput formControlName="confirmEmail" />
             </mat-form-field>
         </div>
     </mat-card>
     <!-- Phone -->
-    <mat-card class="form-card" *ngIf="">
+    <mat-card class="form-card" *ngIf="showPhoneCtrl$ | async">
         <mat-card-subtitle>Téléphone</mat-card-subtitle>
         <mat-form-field appearance="fill">
             <mat-label>Numéro de téléphone</mat-label>
