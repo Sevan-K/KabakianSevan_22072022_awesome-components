@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import {
+    AbstractControl,
     FormBuilder,
     FormControl,
     FormGroup,
@@ -7,6 +8,7 @@ import {
     Validators,
 } from "@angular/forms";
 import { map, Observable, startWith, tap } from "rxjs";
+import { ComplexFormService } from "../../services/complex-form.service";
 
 @Component({
     selector: "app-complex-form",
@@ -14,6 +16,9 @@ import { map, Observable, startWith, tap } from "rxjs";
     styleUrls: ["./complex-form.component.scss"],
 })
 export class ComplexFormComponent implements OnInit {
+    // prop to know the loading state
+    loading = false;
+
     // forms definition
     mainForm!: FormGroup;
     personalInfoForm!: FormGroup;
@@ -26,16 +31,22 @@ export class ComplexFormComponent implements OnInit {
     confirmPasswordCtrl!: FormControl;
     loginInfoForm!: FormGroup; // this formGroup contain two formControl
 
-    // phone and email observable
+    // phone and email observables
     showEmailCtrl$!: Observable<boolean>;
     showPhoneCtrl$!: Observable<boolean>;
 
-    constructor(private formBuilder: FormBuilder) {}
+    // isConfirmEmailCorrect$!: Observable<boolean>;
+
+    constructor(
+        private formBuilder: FormBuilder,
+        private complexFormService: ComplexFormService
+    ) {}
 
     ngOnInit(): void {
         this.initFormControls();
         this.initMainForm();
         this.initFormsObservables();
+        // this.initErrorObservable();
     }
 
     // method to initiate the main form
@@ -131,8 +142,49 @@ export class ComplexFormComponent implements OnInit {
         this.phoneCtrl.updateValueAndValidity();
     }
 
+    /*     // method to init error message observable
+    initErrorObservable() {
+        this.isConfirmEmailCorrect$ = this.confirmEmailCtrl.valueChanges.pipe(
+            map((confirmEmail) => confirmEmail === this.emailCtrl.value),
+            tap((value) => console.log(value))
+        );
+    } */
+
     // action to do when form is submitted
     onSubmitForm(): void {
         console.log(this.mainForm.value);
+        this.loading = true;
+        this.complexFormService
+            .saveUserInfo(this.mainForm.value)
+            .pipe(
+                tap((saved) => {
+                    this.loading = false;
+                    if (saved) {
+                        this.mainForm.reset(); // empty all form value
+                        // inject a value and valuechanges observable is going to emmit
+                        this.contactPreferenceCtrl.patchValue(
+                            "email" /* ,{emitEvent:false} */
+                        );
+                    } else {
+                        console.error("Echec de l'enregistrement des données.");
+                    }
+                })
+            )
+            .subscribe();
+    }
+
+    // method to get form controls errors, it takes an abstract ctrl as an argument (formCtrl and formGroup)
+    getFormCtrlErrorText(ctrl: AbstractControl): string {
+        if (ctrl.hasError("required")) {
+            return "Ce champs est requis";
+        } else if (ctrl.hasError("email")) {
+            return "Merci d'entrer une adress mail valide";
+        } else if (ctrl.hasError("minlength")) {
+            return "Ce numéro de téléphone ne contient pas assez de chiffre";
+        } else if (ctrl.hasError("maxlength")) {
+            return "Ce numéro de téléphone contient trop de chiffre";
+        } else {
+            return "Ce champs contient une erreur";
+        }
     }
 }
