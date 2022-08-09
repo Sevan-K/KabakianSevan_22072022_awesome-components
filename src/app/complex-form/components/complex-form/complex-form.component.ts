@@ -160,11 +160,7 @@ export class ComplexFormComponent implements OnInit {
                 tap((saved) => {
                     this.loading = false;
                     if (saved) {
-                        this.mainForm.reset(); // empty all form value
-                        // inject a value and valuechanges observable is going to emmit
-                        this.contactPreferenceCtrl.patchValue(
-                            "email" /* ,{emitEvent:false} */
-                        );
+                        this.resetForm();
                     } else {
                         console.error("Echec de l'enregistrement des données.");
                     }
@@ -173,6 +169,12 @@ export class ComplexFormComponent implements OnInit {
             .subscribe();
     }
 
+    // method to reset main form values
+    resetForm() {
+        this.mainForm.reset(); // empty all form value
+        // inject a value and valuechanges observable is going to emmit
+        this.contactPreferenceCtrl.patchValue("email" /* ,{emitEvent:false} */);
+    }
     // method to get form controls errors, it takes an abstract ctrl as an argument (formCtrl and formGroup)
     getFormCtrlErrorText(ctrl: AbstractControl): string {
         if (ctrl.hasError("required")) {
