@@ -9,6 +9,9 @@ import {
 } from "@angular/forms";
 import { map, Observable, startWith, tap } from "rxjs";
 import { ComplexFormService } from "../../services/complex-form.service";
+import { confirmEqualValidator } from "../../validators/confirmEqual.validator";
+import { phoneNumberValidator } from "../../validators/phoneNumber.validator";
+import { validValidator } from "../../validators/valid.validator";
 
 @Component({
     selector: "app-complex-form",
@@ -72,10 +75,14 @@ export class ComplexFormComponent implements OnInit {
         // email
         this.emailCtrl = this.formBuilder.control("");
         this.confirmEmailCtrl = this.formBuilder.control("");
-        this.emailForm = this.formBuilder.group({
-            email: this.emailCtrl,
-            confirmEmail: this.confirmEmailCtrl,
-        });
+        this.emailForm = this.formBuilder.group(
+            {
+                email: this.emailCtrl,
+                confirmEmail: this.confirmEmailCtrl,
+            },
+            // other argument to add validators
+            { validators: [confirmEqualValidator("email", "confirmEmail")] }
+        );
         // phone
         this.phoneCtrl = this.formBuilder.control("");
         // login info
@@ -84,11 +91,18 @@ export class ComplexFormComponent implements OnInit {
             "",
             Validators.required
         );
-        this.loginInfoForm = this.formBuilder.group({
-            username: ["", Validators.required],
-            password: this.passwordCtrl,
-            confirmPassword: this.confirmPasswordCtrl,
-        });
+        this.loginInfoForm = this.formBuilder.group(
+            {
+                username: ["", Validators.required],
+                password: this.passwordCtrl,
+                confirmPassword: this.confirmPasswordCtrl,
+            },
+            {
+                validators: [
+                    confirmEqualValidator("password", "confirmPassword"),
+                ],
+            }
+        );
     }
 
     // private method to initiate observables
@@ -114,6 +128,7 @@ export class ComplexFormComponent implements OnInit {
             this.emailCtrl.addValidators([
                 Validators.required,
                 Validators.email,
+                // validValidator(),
             ]);
             this.confirmEmailCtrl.addValidators([
                 Validators.required,
@@ -134,6 +149,7 @@ export class ComplexFormComponent implements OnInit {
                 Validators.required,
                 Validators.minLength(10),
                 Validators.maxLength(10),
+                phoneNumberValidator(),
             ]);
         } else {
             this.phoneCtrl.clearValidators();
@@ -181,11 +197,15 @@ export class ComplexFormComponent implements OnInit {
             return "Ce champs est requis";
         } else if (ctrl.hasError("email")) {
             return "Merci d'entrer une adress mail valide";
+        } else if (ctrl.hasError("phoneNumber")) {
+            return "Le numéro de téléphone ne doit contenir que des chiffres";
         } else if (ctrl.hasError("minlength")) {
             return "Ce numéro de téléphone ne contient pas assez de chiffre";
         } else if (ctrl.hasError("maxlength")) {
             return "Ce numéro de téléphone contient trop de chiffre";
-        } else {
+        } /*  else if (ctrl.hasError("confirmEqual")) {
+            return "Les deux champs ne sont pas identique";
+        }  */ else {
             return "Ce champs contient une erreur";
         }
     }
