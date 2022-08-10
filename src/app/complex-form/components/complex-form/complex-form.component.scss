@@ -44,5 +44,10 @@ mat-card-actions {
 }
 
 .error-text {
-    color: red;
+    color: #f44336;
+    // added by myself
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
 }

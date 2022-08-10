@@ -47,6 +47,9 @@
                 }}</mat-error>
             </mat-form-field>
         </div>
+        <small class="error-text" *ngIf="showEmailError$ | async">
+            Les deux adresses ne correspondent pas
+        </small>
     </mat-card>
     <!-- Phone -->
     <mat-card class="form-card" *ngIf="showPhoneCtrl$ | async">
@@ -81,14 +84,18 @@
                 <mat-error>Ce champs est requis</mat-error>
             </mat-form-field>
         </div>
+        <small class="error-text" *ngIf="showPasswordError$ | async">
+            Les deux adresses ne correspondent pas
+        </small>
     </mat-card>
     <!-- submit button -->
-    <mat-card-actions *ngIf="mainForm.valid">
+    <mat-card-actions>
+        <!-- <mat-card-actions *ngIf="mainForm.valid"> -->
         <button
             mat-flat-button
             color="primary"
             (click)="onSubmitForm()"
-            [disabled]="loading"
+            [disabled]="loading || mainForm.invalid"
         >
             Enregistrez
         </button>
@@ -99,3 +106,5 @@
         mode="indeterminate"
     ></mat-spinner>
 </mat-card>
+
+securityInfoForm

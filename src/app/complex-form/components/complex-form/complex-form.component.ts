@@ -5,6 +5,7 @@ import {
     FormControl,
     FormGroup,
     MaxValidator,
+    ValidationErrors,
     Validators,
 } from "@angular/forms";
 import { map, Observable, startWith, tap } from "rxjs";
@@ -19,6 +20,9 @@ import { validValidator } from "../../validators/valid.validator";
     styleUrls: ["./complex-form.component.scss"],
 })
 export class ComplexFormComponent implements OnInit {
+    /* -------------------------- Props définition -------------------------- */
+    /*                                                                        */
+    /* ---------------------------------------------------------------------- */
     // prop to know the loading state
     loading = false;
 
@@ -40,11 +44,20 @@ export class ComplexFormComponent implements OnInit {
 
     // isConfirmEmailCorrect$!: Observable<boolean>;
 
+    showEmailError$!: Observable<boolean>;
+    showPasswordError$!: Observable<boolean>;
+
+    /* -------------------------- Constructor -------------------------- */
+    /*                                                                   */
+    /* ----------------------------------------------------------------- */
     constructor(
         private formBuilder: FormBuilder,
         private complexFormService: ComplexFormService
     ) {}
 
+    /* -------------------------- On Init calls -------------------------- */
+    /*                                                                     */
+    /* ------------------------------------------------------------------- */
     ngOnInit(): void {
         this.initFormControls();
         this.initMainForm();
@@ -52,6 +65,9 @@ export class ComplexFormComponent implements OnInit {
         // this.initErrorObservable();
     }
 
+    /* -------------------------- Privates methods -------------------------- */
+    /*                                                                        */
+    /* ---------------------------------------------------------------------- */
     // method to initiate the main form
     private initMainForm(): void {
         this.mainForm = this.formBuilder.group({
@@ -81,7 +97,10 @@ export class ComplexFormComponent implements OnInit {
                 confirmEmail: this.confirmEmailCtrl,
             },
             // other argument to add validators
-            { validators: [confirmEqualValidator("email", "confirmEmail")] }
+            {
+                validators: [confirmEqualValidator("email", "confirmEmail")],
+                updateOn: "blur",
+            }
         );
         // phone
         this.phoneCtrl = this.formBuilder.control("");
@@ -101,6 +120,7 @@ export class ComplexFormComponent implements OnInit {
                 validators: [
                     confirmEqualValidator("password", "confirmPassword"),
                 ],
+                updateOn: "blur",
             }
         );
     }
@@ -120,6 +140,25 @@ export class ComplexFormComponent implements OnInit {
             startWith(this.contactPreferenceCtrl.value),
             map((preference) => preference === "phone"),
             tap((showPhoneCtrl) => this.setPhoneValidators(showPhoneCtrl))
+        );
+        // initiate email confirmation observable
+        this.showEmailError$ = this.emailForm.statusChanges.pipe(
+            map(
+                (status) =>
+                    status === "INVALID" &&
+                    this.emailCtrl.value &&
+                    this.confirmEmailCtrl.value
+            )
+        );
+        // initiate email confirmation observable
+        this.showPasswordError$ = this.loginInfoForm.statusChanges.pipe(
+            map(
+                (status) =>
+                    status === "INVALID" &&
+                    this.loginInfoForm.hasError("confirmEqual") &&
+                    this.passwordCtrl.value &&
+                    this.confirmPasswordCtrl.value
+            )
         );
     }
 
@@ -165,6 +204,10 @@ export class ComplexFormComponent implements OnInit {
             tap((value) => console.log(value))
         );
     } */
+
+    /* -------------------------- Public methods -------------------------- */
+    /*                                                                      */
+    /* -------------------------------------------------------------------- */
 
     // action to do when form is submitted
     onSubmitForm(): void {
