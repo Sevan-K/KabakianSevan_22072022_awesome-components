@@ -1,0 +1,30 @@
+<mat-card>
+    <!-- ng container allow use *ngIf without creating a new deif -->
+    <ng-container *ngIf="candidate$ | async as candidate">
+        <img
+            [src]="candidate.imageUrl"
+            [alt]="candidate.firstName + ' ' + candidate.lastName"
+        />
+        <div class="employee-info">
+            <h1>{{ candidate.firstName }} {{ candidate.lastName }}</h1>
+            <h2>{{ candidate.job }} chez {{ candidate.company }}</h2>
+            <h3>Contact : {{ candidate.email }}</h3>
+        </div>
+    </ng-container>
+    <mat-card-actions>
+        <mat-spinner *ngIf="loading$ | async; else buttons"></mat-spinner>
+        <!-- ng template allow to place an element which is hidden by default -->
+        <ng-template #buttons>
+            <div class="action-buttons">
+                <button mat-flat-button color="accent" (click)="onHire()">
+                    Embaucher</button
+                ><button mat-flat-button color="warn" (click)="onRefuse()">
+                    Refuser
+                </button>
+            </div>
+            <button mat-flat-button color="primary" (click)="onGoBack()">
+                Retour
+            </button>
+        </ng-template>
+    </mat-card-actions>
+</mat-card>
