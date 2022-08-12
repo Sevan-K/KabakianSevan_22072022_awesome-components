@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Observable, switchMap } from "rxjs";
+import { Observable, switchMap, take, tap } from "rxjs";
 import { Candidate } from "../../models/candidate.model";
 import { CandidateService } from "../../services/candidate.service";
 
@@ -31,6 +31,7 @@ export class SingleCandidateComponent implements OnInit {
         this.loading$ = this.candidateService.loading$;
         // init candidate
         // const candidateId = +this.route.snapshot.params["id"];
+        // this.candidate$ = this.candidateService.getCandidateById(candidateId);
         this.candidate$ = this.route.params.pipe(
             switchMap((params) =>
                 this.candidateService.getCandidateById(+params["id"])
@@ -42,7 +43,21 @@ export class SingleCandidateComponent implements OnInit {
     onHire() {}
 
     // method to handle click on Refuse
-    onRefuse() {}
+    onRefuse() {
+        // const candidateId = +this.route.snapshot.params["id"];
+        // this.candidateService.refuseCandidate(candidateId);
+        this.candidate$
+            .pipe(
+                take(1),
+                tap((candidate) => {
+                    if (candidate) {
+                        this.candidateService.refuseCandidate(candidate.id);
+                    }
+                    this.onGoBack();
+                })
+            )
+            .subscribe();
+    }
 
     // method to handle click on GoBack
     onGoBack() {

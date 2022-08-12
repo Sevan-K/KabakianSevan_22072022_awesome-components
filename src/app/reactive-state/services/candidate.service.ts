@@ -1,6 +1,17 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, delay, map, Observable, tap } from "rxjs";
+import {
+    BehaviorSubject,
+    catchError,
+    delay,
+    filter,
+    map,
+    Observable,
+    of,
+    switchMap,
+    take,
+    tap,
+} from "rxjs";
 import { environment } from "src/environments/environment";
 import { Candidate } from "../models/candidate.model";
 
@@ -50,6 +61,7 @@ export class CandidateService {
             .subscribe();
     }
 
+    // get a single candidate using ist id
     getCandidateById(id: number): Observable<Candidate> {
         if (this.lastCandidatesLoad === 0) {
             this.getCandidatesFromServer();
@@ -60,5 +72,27 @@ export class CandidateService {
                     candidates.filter((candidate) => candidate.id === id)[0]
             )
         );
+    }
+
+    // method to refuse a candidate and remove it from the list
+    refuseCandidate(id: number): void {
+        this.setLoadingStatus(true);
+        this.http
+            .delete(`${environment.apiUrl}/candidates/${id}`)
+            .pipe(
+                delay(1000),
+                switchMap(() => this.candidates$),
+                // to subscribe only to the ponctual value of candidates$
+                take(1),
+                map((candidates) =>
+                    candidates.filter((candidate) => candidate.id !== id)
+                ),
+                tap((candidates) => {
+                    // dispatch the chancge to the behavior subject to inform components
+                    this._candidates$.next(candidates);
+                    this.setLoadingStatus(false);
+                })
+            )
+            .subscribe();
     }
 }
