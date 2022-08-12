@@ -1,0 +1,16 @@
+mat-card-title-group {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+}
+
+mat-form-field {
+    margin: 0px 10px;
+}

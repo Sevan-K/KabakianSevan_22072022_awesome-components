@@ -1,8 +1,29 @@
 <mat-card>
     <mat-card-title-group>
         <mat-card-title>Candidats</mat-card-title>
+        <!-- research part -->
+        <div class="form">
+            <!-- form filed for the search typr-->
+            <mat-form-field appearance="fill">
+                <mat-select [formControl]="searchTypeCtrl">
+                    <mat-option
+                        *ngFor="let option of searchTypeOptions"
+                        [value]="option.value"
+                    >
+                        {{ option.label }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <!-- form filed for the search -->
+            <mat-form-field appearance="fill">
+                <input matInput type="text" [formControl]="searchCtrl" />
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+        </div>
     </mat-card-title-group>
+    <!-- spinner -->
     <mat-spinner *ngIf="loading$ | async"></mat-spinner>
+    <!-- nav list -->
     <mat-nav-list *ngIf="candidates$ | async as candidates">
         <a
             *ngFor="let candidate of candidates"

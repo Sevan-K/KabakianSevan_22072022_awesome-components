@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
-import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { catchError, filter, map, Observable, switchMap, tap } from "rxjs";
+import { Observable, switchMap } from "rxjs";
 import { Candidate } from "../../models/candidate.model";
 import { CandidateService } from "../../services/candidate.service";
 
@@ -15,20 +14,19 @@ export class SingleCandidateComponent implements OnInit {
     // local observables to get service data
     loading$!: Observable<boolean>;
     candidate$!: Observable<Candidate | undefined>;
-    // research controls
 
     constructor(
         private route: ActivatedRoute,
         private candidateService: CandidateService,
-        private router: Router,
-        private formBuilder: FormBuilder
+        private router: Router
     ) {}
 
     ngOnInit(): void {
         this.initObservables();
     }
 
-    initObservables() {
+    // private method to init observable
+    private initObservables() {
         // init loading
         this.loading$ = this.candidateService.loading$;
         // init candidate
