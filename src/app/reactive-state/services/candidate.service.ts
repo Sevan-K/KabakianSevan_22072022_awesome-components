@@ -50,7 +50,10 @@ export class CandidateService {
             .subscribe();
     }
 
-    getCandidateByID(id: number): Observable<Candidate> {
+    getCandidateById(id: number): Observable<Candidate> {
+        if (this.lastCandidatesLoad === 0) {
+            this.getCandidatesFromServer();
+        }
         return this.candidates$.pipe(
             map(
                 (candidates) =>
