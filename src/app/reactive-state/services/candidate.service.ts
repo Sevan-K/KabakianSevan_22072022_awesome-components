@@ -74,7 +74,7 @@ export class CandidateService {
         );
     }
 
-    // method to refuse a candidate and remove it from the list
+    // method to refuse a candidate and remove it from the list (pessimist approach since we wait for the server answer)
     refuseCandidate(id: number): void {
         this.setLoadingStatus(true);
         this.http
@@ -92,6 +92,40 @@ export class CandidateService {
                     this._candidates$.next(candidates);
                     this.setLoadingStatus(false);
                 })
+            )
+            .subscribe();
+    }
+
+    // method to hire a candidate (positive approach)
+    hireCandidate(id: number): void {
+        // this.setLoadingStatus(true);
+        this.candidates$
+            .pipe(
+                take(1),
+                map((candidates) =>
+                    candidates.map((candidate) =>
+                        candidate.id === id
+                            ? {
+                                  ...candidate,
+                                  company: "SnapFace Ltd",
+                              }
+                            : candidate
+                    )
+                ),
+                tap((updatedCandidates) => {
+                    this._candidates$.next(updatedCandidates);
+                    // this.setLoadingStatus(false);
+                }),
+                delay(1000),
+                switchMap((updatedCandidates) =>
+                    this.http.patch(
+                        `${environment.apiUrl}/candidates/${id}`,
+                        // looking for the updated candidate
+                        updatedCandidates.find(
+                            (updatedCandidate) => updatedCandidate.id === id
+                        )
+                    )
+                )
             )
             .subscribe();
     }

@@ -40,7 +40,19 @@ export class SingleCandidateComponent implements OnInit {
     }
 
     // method to handle click on hire
-    onHire() {}
+    onHire() {
+        this.candidate$
+            .pipe(
+                take(1),
+                tap((candidate) => {
+                    if (candidate) {
+                        this.candidateService.hireCandidate(candidate.id);
+                    }
+                    this.onGoBack();
+                })
+            )
+            .subscribe();
+    }
 
     // method to handle click on Refuse
     onRefuse() {

@@ -51,6 +51,7 @@ export class CandidateListComponent implements OnInit {
             );
         // combineLatest is an operator to create observable
         //  a tupple is emmited each time one of the source observable emmit
+        // À chaque émission de l'un de ses Observables enfants,  combineLatest  émet les dernières émissions de tous ses enfants sous forme de tuple – à condition que tous les enfants aient émis au moins une fois !
         this.candidates$ = combineLatest([
             search$,
             searchType$,
